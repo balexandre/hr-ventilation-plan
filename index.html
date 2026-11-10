@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Lille Skensved HRV Plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@75..125,500..800&family=Public+Sans:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: one technical-drawing column; the floor plan is the centrepiece, sections read like an installer's spec sheet.
+   Duct colours follow the European convention: outdoor air green, supply blue, extract yellow, exhaust brown. */
+:root{
+  --bg:#eef2f3; --surface:#ffffff; --ink:#16232b; --muted:#56666f; --line:#cfd8dc; --closet:#e2e8eb;
+  --accent:#1f5d7a; --accent-soft:#dbe9f0;
+  --oda:#3b8a48; --sup:#2564a8; --eta:#b88a00; --eha:#8a5a35;
+  --ok:#2f7d4f; --warn:#b26b00; --bad:#b3362c;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0f161a; --surface:#162026; --ink:#e2eaee; --muted:#94a5ad; --line:#2a3a42; --closet:#1c2a31;
+  --accent:#86bddb; --accent-soft:#1d3240;
+  --oda:#6cc07a; --sup:#6ea9ec; --eta:#e6be45; --eha:#c99168;
+  --ok:#6cc58f; --warn:#e7a443; --bad:#ef7a6f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f161a; --surface:#162026; --ink:#e2eaee; --muted:#94a5ad; --line:#2a3a42; --closet:#1c2a31;
+  --accent:#86bddb; --accent-soft:#1d3240;
+  --oda:#6cc07a; --sup:#6ea9ec; --eta:#e6be45; --eha:#c99168;
+  --ok:#6cc58f; --warn:#e7a443; --bad:#ef7a6f; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6}
+.wrap{max-width:1080px;margin:0 auto;padding-block:40px 64px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  display:flex;flex-direction:column;gap:56px}
+h1,h2,h3{font-family:var(--f-display);font-stretch:88%;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(2rem,5vw,3.1rem);font-weight:800;letter-spacing:-.01em}
+h2{font-size:1.65rem;font-weight:750}
+h3{font-size:1.1rem;font-weight:700}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,input:focus-visible,label:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.eyebrow{font-family:var(--f-mono);font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.mono,.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+section{display:flex;flex-direction:column;gap:20px}
+.lede{font-size:1.1rem;color:var(--muted)}
+.stack{display:flex;flex-direction:column;gap:12px}
+
+header.top{display:flex;flex-direction:column;gap:16px}
+nav.toc{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.9rem}
+nav.toc a{text-decoration:none;border-bottom:1px solid var(--line);color:var(--ink)}
+nav.toc a:hover{border-color:var(--accent);color:var(--accent)}
+
+.verdict{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--ok);padding:24px;display:grid;grid-template-columns:1fr;gap:16px}
+.verdict h2{font-size:1.4rem}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.fact{background:var(--surface);padding:14px 16px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.fact b{font-family:var(--f-mono);font-size:1.25rem;font-weight:600}
+.fact span{font-size:.82rem;color:var(--muted)}
+
+.plan-card{background:var(--surface);border:1px solid var(--line);padding:16px;display:flex;flex-direction:column;gap:14px}
+.who{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.92rem}
+.who fieldset{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.who legend{float:left;margin-right:8px;font-weight:600}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:4px 10px;border-radius:999px;cursor:pointer;background:var(--bg)}
+.chip input{accent-color:var(--accent);margin:0}
+.chip:has(input:checked){border-color:var(--accent);background:var(--accent-soft)}
+.svgbox{overflow-x:auto}
+.svgbox svg{display:block;width:100%;min-width:640px;height:auto}
+.legend{display:flex;flex-wrap:wrap;gap:8px 20px;font-size:.85rem;color:var(--muted)}
+.legend i{display:inline-block;width:22px;height:0;border-top:4px solid;vertical-align:middle;margin-right:6px}
+.legend .dot{width:14px;height:14px;border-radius:50%;border:0;margin-right:6px}
+
+/* svg */
+.fp-foot{fill:var(--closet)}
+.fp-room{fill:var(--surface);stroke:var(--line);stroke-width:4}
+.fp-wall{fill:none;stroke:var(--ink);stroke-width:20;stroke-linejoin:miter}
+.fp-label{fill:var(--ink);font-family:var(--f-display);font-stretch:88%;font-weight:700;font-size:27px}
+.fp-sub{fill:var(--muted);font-family:var(--f-body);font-size:19px}
+.fp-who{fill:var(--accent);font-family:var(--f-body);font-weight:600;font-size:19px}
+.fp-flow{font-family:var(--f-mono);font-size:19px;font-weight:600}
+.d-sup{fill:none;stroke:var(--sup);stroke-width:7;stroke-linecap:round;stroke-linejoin:round}
+.d-eta{fill:none;stroke:var(--eta);stroke-width:7;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:18 10}
+.d-oda{fill:none;stroke:var(--oda);stroke-width:7}
+.d-eha{fill:none;stroke:var(--eha);stroke-width:7}
+.v-sup{fill:var(--sup)} .v-eta{fill:var(--eta)} .t-sup{fill:var(--sup)} .t-eta{fill:var(--eta)}
+.v-ring{fill:var(--surface);stroke-width:5}
+.unit{fill:var(--surface);stroke:var(--accent);stroke-width:5}
+.unit-t{fill:var(--accent);font-family:var(--f-mono);font-weight:600;font-size:18px}
+.hatch{fill:none;stroke:var(--muted);stroke-width:3;stroke-dasharray:8 6}
+.stove{fill:var(--closet);stroke:var(--muted);stroke-width:3}
+.door-gap{fill:var(--surface)}
+.door-leaf{fill:none;stroke:var(--muted);stroke-width:3;stroke-linecap:round}
+.door-swing{fill:none;stroke:var(--muted);stroke-width:1.5;stroke-dasharray:5 4}
+.door-key .door-leaf{stroke:var(--accent);stroke-width:5}
+.door-key .door-swing{stroke:var(--accent);stroke-width:2}
+
+/* tables */
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;font-size:.92rem}
+th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--f-mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;background:var(--bg)}
+td.n,th.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+tfoot td{font-weight:700;background:var(--bg)}
+.tag{display:inline-block;font-family:var(--f-mono);font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:3px;white-space:nowrap;color:var(--surface)}
+.tag.sup{background:var(--sup)} .tag.eta{background:var(--eta)} .tag.tr{background:var(--muted)}
+.pick{color:var(--ok);font-weight:700}
+
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.box{background:var(--surface);border:1px solid var(--line);padding:20px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.box.rec{border-top:4px solid var(--ok)}
+.box.alt{border-top:4px solid var(--line)}
+.box ul,.list{margin:0;padding-left:1.2em;display:flex;flex-direction:column;gap:6px}
+.note{background:var(--accent-soft);padding:14px 16px;font-size:.93rem;display:flex;flex-direction:column;gap:6px}
+.warnbox{border:1px solid var(--line);border-left:5px solid var(--warn);background:var(--surface);padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+
+.rating{font-family:var(--f-mono);letter-spacing:2px;color:var(--accent);white-space:nowrap}
+
+/* calculator */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.calc>div{background:var(--surface);padding:20px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:.88rem;font-weight:600;display:flex;justify-content:space-between;gap:8px}
+.field label output{font-family:var(--f-mono);color:var(--accent)}
+.field input[type=range]{width:100%;accent-color:var(--accent)}
+.field small{color:var(--muted);font-size:.8rem}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px}
+button.ghost{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:6px 12px;cursor:pointer;border-radius:4px}
+button.ghost:hover{border-color:var(--accent);color:var(--accent)}
+.out{display:flex;justify-content:space-between;gap:12px;align-items:baseline;border-bottom:1px dashed var(--line);padding-bottom:8px}
+.out span{font-size:.9rem;color:var(--muted)}
+.out b{font-family:var(--f-mono);font-size:1.15rem;white-space:nowrap}
+.status{padding:10px 14px;font-weight:600;font-size:.92rem;border-left:5px solid}
+.status.ok{border-color:var(--ok);color:var(--ok);background:var(--bg)}
+.status.warn{border-color:var(--warn);color:var(--warn);background:var(--bg)}
+.status.bad{border-color:var(--bad);color:var(--bad);background:var(--bg)}
+
+/* steps */
+ol.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0;counter-reset:s}
+ol.steps li{counter-increment:s;display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:16px 0;border-top:1px solid var(--line)}
+ol.steps li::before{content:counter(s);font-family:var(--f-mono);font-weight:600;font-size:1.05rem;width:36px;height:36px;border:2px solid var(--accent);color:var(--accent);display:grid;place-items:center;border-radius:50%}
+ol.steps li div{display:flex;flex-direction:column;gap:4px}
+.check{display:flex;flex-direction:column;gap:0;background:var(--surface);border:1px solid var(--line)}
+.check label{display:flex;gap:12px;align-items:flex-start;padding:12px 16px;border-bottom:1px solid var(--line);cursor:pointer}
+.check label:last-child{border-bottom:0}
+.check input{margin-top:5px;accent-color:var(--ok);flex:none}
+.check label:has(input:checked) span{color:var(--muted);text-decoration:line-through}
+footer{font-size:.85rem;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+
+/* exact duct runs */
+.r-sup,.r-eta{fill:none;stroke-width:6;stroke-linecap:round;stroke-linejoin:round}
+.r-sup{stroke:var(--sup)} .r-eta{stroke:var(--eta)}
+.r-sup.twin,.r-eta.twin{stroke-width:14;stroke-linecap:butt}
+.r-gap{fill:none;stroke:var(--surface);stroke-width:4;stroke-linejoin:round}
+.r-halo{fill:none;stroke:var(--surface);stroke-width:26;stroke-linejoin:round}
+.main160{fill:none;stroke:var(--accent);stroke-width:12}
+.box-s{fill:var(--sup)} .box-e{fill:var(--eta)}
+.annot{margin:0;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column}
+.annot a{display:block;line-height:0}
+.annot svg{display:block;width:100%;height:auto}
+.annot figcaption{padding:12px 16px;font-size:.88rem;color:var(--muted)}
+.an-t{font-family:var(--f-mono);font-weight:600;font-size:38px;fill:#fff;stroke:rgba(0,0,0,.72);stroke-width:7px;paint-order:stroke;stroke-linejoin:round}
+.an-keep{fill:rgba(179,54,44,.3);stroke:#b3362c;stroke-width:4;stroke-dasharray:14 8}
+.an-hp{fill:none;stroke:#fff;stroke-width:5;stroke-dasharray:14 8}
+.an-dist{stroke:#fff;stroke-width:4;stroke-dasharray:10 8}
+.cyl{fill:var(--closet);stroke:var(--ink);stroke-width:3;stroke-dasharray:9 6}
+.box-t{fill:var(--surface);font-family:var(--f-mono);font-weight:600;font-size:20px}
+.fp-label.sm{font-size:21px}
+.legend .twin{border-top:7px double}
+.legend .thick{border-top-width:6px}
+.optgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.box.no{border-top:4px solid var(--bad)}
+.box .verdict-tag{font-family:var(--f-mono);font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase}
+.box.rec .verdict-tag{color:var(--ok)} .box.alt .verdict-tag{color:var(--muted)} .box.no .verdict-tag{color:var(--bad)}
+td.sub{color:var(--muted);font-size:.85rem}
+tr.group td{background:var(--bg);font-weight:700;font-family:var(--f-display);font-stretch:88%;font-size:1rem}
+
+/* site photos */
+.gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
+.gallery figure{margin:0;background:var(--surface);border:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.gallery figure.key{outline:3px solid var(--accent);outline-offset:-1px}
+.gallery a{display:block;position:relative;line-height:0}
+.gallery img{display:block;width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;background:var(--closet)}
+.gallery .pin{position:absolute;top:8px;left:8px;line-height:1.4;font-family:var(--f-mono);font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:3px;background:var(--accent);color:var(--surface)}
+.gallery figcaption{padding:10px 12px 12px;font-size:.85rem;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.gallery figcaption b{color:var(--ink);font-size:.92rem}
+.gallery figcaption .mono{font-size:.72rem}
+
+@media (max-width:720px){.calc{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="top">
+  <div class="eyebrow">Lille Skensved, Køge · single-storey · 159 m² · 5–6 people</div>
+  <h1>Heat-recovery ventilation plan</h1>
+  <p class="lede">A planning sheet for a balanced mechanical ventilation system with heat recovery (in Danish: <i>balanceret mekanisk ventilation med varmegenvinding</i>) for your house. It covers where air goes in and out, every tube and joint, what to buy, what it costs, and whether it suits the Zealand climate. Use it to brief installers and compare quotes.</p>
+  <nav class="toc" aria-label="Sections">
+    <a href="#plan">Floor plan</a><a href="#attic">Attic today</a><a href="#flows">Air flows</a><a href="#ducts">Ducts and joints</a><a href="#vents">Vents and habits</a>
+    <a href="#climate">Is HRV right?</a><a href="#machines">Machines</a><a href="#fittings">Shopping list</a>
+    <a href="#calc">Calculator</a><a href="#costs">Costs</a><a href="#steps">Next steps</a>
+  </nav>
+</header>
+
+<div class="verdict">
+  <div class="eyebrow">Short answer</div>
+  <h2>Yes. A central heat-recovery unit is the right choice for this house.</h2>
+  <p>Five people in a 159 m² house produce roughly 11–14 litres of water vapour a day. In a closed-up Danish winter house that moisture ends up on the coldest surfaces, which is where mould starts. A central unit sized for about 300 m³/h, running continuously at about 175 m³/h, removes that moisture and keeps 80–90% of the heat. Your attic already holds the hot-water cylinder and the heat-pump electronics, so the unit goes up there beside them. With an asbestos-cement roof, the fresh-air intake and the exhaust go out through the gable wall, not through the roof.</p>
+  <div class="facts">
+    <div class="fact"><b>159 m²</b><span>heated floor area (BBR)</span></div>
+    <div class="fact"><b>173 m³/h</b><span>normal running flow (48 l/s)</span></div>
+    <div class="fact"><b>230 m³/h</b><span>boost flow (64 l/s)</span></div>
+    <div class="fact"><b>~300 m³/h</b><span>unit size to look for</span></div>
+    <div class="fact"><b>16 tubes</b><span>Ø90 mm, ≈137 m in total</span></div>
+    <div class="fact"><b>60–110k</b><span>DKK, installed, typical range</span></div>
+  </div>
+</div>
+
+<section id="plan">
+  <div class="stack">
+    <div class="eyebrow">Layout</div>
+    <h2>Every tube, from the attic to the ceilings</h2>
+    <p>Fresh, pre-warmed air is blown into the rooms where you sleep and sit. Stale, moist air is pulled out where water and smells are made. Air moves between the two through the hall and the gaps under the doors. The drawing shows the actual tube runs: each line is one Ø90 mm tube from a distribution box by the hatch to one ceiling valve. A double line is two tubes going to the same valve. All of it lies in the attic; downstairs you only see the valves.</p>
+  </div>
+
+  <div class="plan-card">
+    <div class="svgbox">
+    <svg viewBox="180 150 1560 1060" role="img" aria-labelledby="fp-title fp-desc">
+      <title id="fp-title">Floor plan with every ventilation tube</title>
+      <desc id="fp-desc">Unit in the attic on the south side of the cylinder box, near the east gable, linked by two insulated Ø160 ducts to a supply box and an extract box by the hatch. The supply box feeds eight tubes to six supply valves: two tubes each to bedrooms 1 and 4, one tube each to bedrooms 2 and 3 and to two living-room valves. An extract box takes two tubes each from the kitchen, both bathrooms and the laundry room. Intake and exhaust go through the south half of the east gable, away from the heat pump that stands outside the laundry window.</desc>
+      <defs>
+        <path id="s-b1" d="M1295,345 V440 H425 V432"/>
+        <path id="s-b2" d="M1305,345 V455 H455 V703"/>
+        <path id="s-b3" d="M1315,345 V470 H735 V703"/>
+        <path id="s-la" d="M1325,345 V485 H990 V703"/>
+        <path id="s-lb" d="M1335,345 V500 H1020 V943"/>
+        <path id="s-b4" d="M1345,345 V720 H1373"/>
+        <path id="e-k"  d="M1415,312 H1395 V298 H1180 V328"/>
+        <path id="e-b2" d="M1415,296 H1405 V284 H627 V380 H569"/>
+        <path id="e-l"  d="M1465,305 H1530 V313"/>
+        <path id="e-b1" d="M1460,325 V468 H1533"/>
+      </defs>
+
+      <polygon class="fp-foot" points="210,185 1640,185 1640,878 1298,878 1298,1182 786,1182 786,878 210,878"/>
+      <rect class="fp-room" x="232" y="210" width="271" height="295"/>
+      <rect class="fp-room" x="513" y="210" width="124" height="248"/>
+      <polygon class="fp-room" points="645,210 798,210 798,618 388,618 388,510 645,510"/>
+      <rect class="fp-room" x="232" y="625" width="280" height="232"/>
+      <rect class="fp-room" x="522" y="625" width="276" height="232"/>
+      <rect class="fp-room" x="808" y="210" width="467" height="223"/>
+      <rect class="fp-room" x="808" y="443" width="467" height="717"/>
+      <rect class="fp-room" x="1285" y="210" width="333" height="202"/>
+      <rect class="fp-room" x="1285" y="425" width="333" height="145"/>
+      <rect class="fp-room" x="1285" y="578" width="333" height="279"/>
+      <rect class="stove" x="812" y="1013" width="48" height="143"/>
+      <!-- open arch between kitchen and living room -->
+      <rect x="945" y="427" width="65" height="22" fill="var(--surface)"/>
+      <polygon class="fp-wall" points="210,185 1640,185 1640,878 1298,878 1298,1182 786,1182 786,878 210,878"/>
+
+      <!-- doors, from the original drawing (the kitchen arch has no door) -->
+      <g class="door"><title>front door</title><rect class="door-gap" x="687" y="173" width="73" height="41"/><path class="door-swing" d="M687,283 A73,73 0 0 0 760,210"/><path class="door-leaf" d="M687,210 L687,283"/></g>
+      <g class="door"><title>Bathroom 2</title><rect class="door-gap" x="633" y="234" width="16" height="62"/><path class="door-swing" d="M575,296 A62,62 0 0 1 637,234"/><path class="door-leaf" d="M637,296 L575,296"/></g>
+      <g class="door"><title>Bedroom 1</title><rect class="door-gap" x="420" y="501" width="62" height="13"/><path class="door-swing" d="M482,443 A62,62 0 0 0 420,505"/><path class="door-leaf" d="M482,505 L482,443"/></g>
+      <g class="door"><title>Bedroom 2</title><rect class="door-gap" x="433" y="614" width="62" height="15"/><path class="door-swing" d="M495,688 A70,70 0 0 1 433,618"/><path class="door-leaf" d="M495,618 L495,688"/></g>
+      <g class="door"><title>Bedroom 3</title><rect class="door-gap" x="545" y="614" width="62" height="15"/><path class="door-swing" d="M545,688 A70,70 0 0 0 607,618"/><path class="door-leaf" d="M545,618 L545,688"/></g>
+      <g class="door door-key"><title>hall to living room</title><rect class="door-gap" x="794" y="490" width="18" height="62"/><path class="door-swing" d="M870,552 A62,62 0 0 0 808,490"/><path class="door-leaf" d="M808,552 L870,552"/></g>
+      <g class="door"><title>kitchen to laundry</title><rect class="door-gap" x="1271" y="340" width="18" height="60"/><path class="door-swing" d="M1345,400 A60,60 0 0 0 1285,340"/><path class="door-leaf" d="M1285,400 L1345,400"/></g>
+      <g class="door"><title>laundry outside door</title><rect class="door-gap" x="1347" y="173" width="78" height="41"/><path class="door-swing" d="M1347,288 A78,78 0 0 0 1425,210"/><path class="door-leaf" d="M1347,210 L1347,288"/></g>
+      <g class="door"><title>Bathroom 1</title><rect class="door-gap" x="1362" y="566" width="64" height="16"/><path class="door-swing" d="M1362,508 A62,62 0 0 1 1426,570"/><path class="door-leaf" d="M1362,570 L1362,508"/></g>
+      <g class="door"><title>Bedroom 4</title><rect class="door-gap" x="1271" y="592" width="18" height="65"/><path class="door-swing" d="M1350,592 A65,65 0 0 1 1285,657"/><path class="door-leaf" d="M1285,592 L1350,592"/></g>
+      <g class="door"><title>terrace door</title><rect class="door-gap" x="1271" y="890" width="39" height="72"/><path class="door-swing" d="M1370,890 A72,72 0 0 1 1298,962"/><path class="door-leaf" d="M1298,890 L1370,890"/></g>
+
+      <!-- room labels -->
+      <text class="fp-label" x="318" y="390" text-anchor="middle">Bedroom 1</text>
+      <text class="fp-who" x="318" y="418" text-anchor="middle">Daughter, 19 (+1)</text>
+      <text class="fp-sub" x="318" y="443" text-anchor="middle">12.6 m² · no sun</text>
+      <text class="fp-label" x="330" y="790" text-anchor="middle">Bedroom 2</text>
+      <text class="fp-who" x="330" y="818" text-anchor="middle">Son, 16 · gaming PC</text>
+      <text class="fp-sub" x="330" y="843" text-anchor="middle">10.7 m² · window shut</text>
+      <text class="fp-label" x="625" y="790" text-anchor="middle">Bedroom 3</text>
+      <text class="fp-who" x="625" y="818" text-anchor="middle">Son, 11 · gaming PC</text>
+      <text class="fp-sub" x="625" y="843" text-anchor="middle">8.5 m²</text>
+      <text class="fp-label" x="1500" y="785" text-anchor="middle">Bedroom 4</text>
+      <text class="fp-who" x="1500" y="813" text-anchor="middle">You two · en-suite</text>
+      <text class="fp-sub" x="1500" y="838" text-anchor="middle">12.2 m²</text>
+      <text class="fp-label sm" x="563" y="318" text-anchor="middle">Bathroom 2</text>
+      <text class="fp-sub" x="563" y="343" text-anchor="middle">shower</text>
+      <text class="fp-label" x="722" y="335" text-anchor="middle">Entré</text>
+      <text class="fp-sub" x="722" y="360" text-anchor="middle">hall</text>
+      <text class="fp-label" x="560" y="545" text-anchor="middle">Gang</text>
+      <text class="fp-sub" x="306" y="572" text-anchor="middle">closets</text>
+      <text class="fp-label" x="1000" y="350" text-anchor="middle">Kitchen</text>
+      <text class="fp-sub" x="1000" y="375" text-anchor="middle">hood vents outside</text>
+      <text class="fp-label sm" x="1562" y="264" text-anchor="middle">Laundry room</text>
+      <text class="fp-label sm" x="1356" y="505">Bathroom 1</text>
+      <text class="fp-sub" x="1356" y="527" style="font-size:17px">tub · en-suite</text>
+      <text class="fp-label" x="1140" y="760" text-anchor="middle">Living room</text>
+      <text class="fp-sub" x="1140" y="787" text-anchor="middle">43.3 m²</text>
+      <text class="fp-sub" x="872" y="1090">unused fireplace</text>
+
+      <!-- heat pump outside the laundry window (east facade, north end) -->
+      <g><title>Vaillant heat pump, outside the laundry window</title>
+        <rect class="stove" x="1656" y="255" width="40" height="100" rx="3"/>
+        <circle cx="1676" cy="305" r="14" fill="none" stroke="var(--muted)" stroke-width="3"/>
+        <text class="fp-sub" transform="translate(1716,305) rotate(90)" text-anchor="middle" style="font-size:16px">heat pump</text>
+      </g>
+
+      <!-- cylinder box in the attic (outline approximate) -->
+      <g><title>cylinder box: hot-water cylinder and heat-pump electronics</title>
+        <rect class="cyl" x="1510" y="490" width="105" height="108"/>
+        <text class="fp-sub" x="1562" y="538" text-anchor="middle" style="font-size:16px">cylinder</text>
+        <text class="fp-sub" x="1562" y="558" text-anchor="middle" style="font-size:16px">box</text>
+      </g>
+
+      <!-- Ø160 from unit to the two boxes by the hatch, round the west side of the cylinder box -->
+      <path class="main160" d="M1510,628 H1496 V240 H1320 V310"/>
+      <path class="main160" d="M1510,650 H1478 V255 H1440 V290"/>
+
+      <!-- outdoor air + exhaust through the south half of the east gable (insulated Ø160) -->
+      <path class="d-eha" d="M1615,625 H1650" style="stroke-width:10"/>
+      <path class="d-oda" d="M1600,662 V775 H1650" style="stroke-width:10"/>
+      <circle cx="1662" cy="625" r="11" fill="var(--eha)"/>
+      <circle cx="1662" cy="775" r="11" fill="var(--oda)"/>
+      <text class="fp-flow" x="1680" y="631" style="fill:var(--eha);font-size:17px">out</text>
+      <text class="fp-flow" x="1680" y="781" style="fill:var(--oda);font-size:17px">in</text>
+
+      <!-- supply tubes -->
+      <use href="#s-b1" class="r-sup twin"/><use href="#s-b1" class="r-gap"/>
+      <use href="#s-b2" class="r-sup"/>
+      <use href="#s-b3" class="r-sup"/>
+      <use href="#s-la" class="r-sup"/>
+      <use href="#s-lb" class="r-sup"/>
+      <use href="#s-b4" class="r-sup twin"/><use href="#s-b4" class="r-gap"/>
+
+      <!-- extract tubes (halo shows where they cross over) -->
+      <use href="#e-k" class="r-halo"/><use href="#e-b2" class="r-halo"/>
+      <use href="#e-k" class="r-eta twin"/><use href="#e-k" class="r-gap"/>
+      <use href="#e-b2" class="r-eta twin"/><use href="#e-b2" class="r-gap"/>
+      <path class="r-halo" d="M1468,305 H1530"/><path class="r-halo" d="M1466,468 H1533"/>
+      <use href="#e-l" class="r-eta twin"/><use href="#e-l" class="r-gap"/>
+      <use href="#e-b1" class="r-eta twin"/><use href="#e-b1" class="r-gap"/>
+
+      <!-- open arch between kitchen and living room: no door -->
+      <text class="fp-sub" x="977" y="420" text-anchor="middle" style="fill:var(--accent);font-weight:600;font-size:17px">open arch</text>
+
+      <!-- the busiest door: hall to living room -->
+      <text class="fp-sub" x="880" y="527" style="fill:var(--accent);font-weight:600;font-size:17px">hall door:</text>
+      <text class="fp-sub" x="880" y="547" style="fill:var(--accent);font-weight:600;font-size:17px">15 mm gap</text>
+
+      <!-- unit, boxes, hatch -->
+      <rect class="hatch" x="1365" y="365" width="75" height="45"/>
+      <text class="fp-sub" x="1402" y="438" text-anchor="middle" style="font-size:16px">hatch</text>
+      <rect class="unit" x="1510" y="612" width="105" height="50" rx="4"/>
+      <text class="unit-t" x="1562" y="643" text-anchor="middle" style="font-size:16px">HRV UNIT</text>
+      <rect class="box-s" x="1288" y="310" width="64" height="35" rx="3"/>
+      <text class="box-t" x="1320" y="334" text-anchor="middle">S</text>
+      <rect class="box-e" x="1413" y="290" width="54" height="35" rx="3"/>
+      <text class="box-t" x="1440" y="314" text-anchor="middle">E</text>
+
+      <!-- supply valves -->
+      <circle class="v-ring" cx="425" cy="415" r="17" stroke="var(--sup)"/><circle class="v-sup" cx="425" cy="415" r="8"/>
+      <text class="fp-flow t-sup" x="437" y="386" text-anchor="middle">10 l/s</text>
+      <circle class="v-ring" cx="455" cy="720" r="17" stroke="var(--sup)"/><circle class="v-sup" cx="455" cy="720" r="8"/>
+      <text class="fp-flow t-sup" x="431" y="727" text-anchor="end">7 l/s</text>
+      <circle class="v-ring" cx="735" cy="720" r="17" stroke="var(--sup)"/><circle class="v-sup" cx="735" cy="720" r="8"/>
+      <text class="fp-flow t-sup" x="711" y="727" text-anchor="end">7 l/s</text>
+      <circle class="v-ring" cx="1390" cy="720" r="17" stroke="var(--sup)"/><circle class="v-sup" cx="1390" cy="720" r="8"/>
+      <text class="fp-flow t-sup" x="1414" y="727">10 l/s</text>
+      <circle class="v-ring" cx="990" cy="720" r="17" stroke="var(--sup)"/><circle class="v-sup" cx="990" cy="720" r="8"/>
+      <text class="fp-flow t-sup" x="966" y="727" text-anchor="end">7 l/s</text>
+      <circle class="v-ring" cx="1020" cy="960" r="17" stroke="var(--sup)"/><circle class="v-sup" cx="1020" cy="960" r="8"/>
+      <text class="fp-flow t-sup" x="996" y="967" text-anchor="end">7 l/s</text>
+      <!-- extract valves -->
+      <circle class="v-ring" cx="1180" cy="345" r="17" stroke="var(--eta)"/><circle class="v-eta" cx="1180" cy="345" r="8"/>
+      <text class="fp-flow t-eta" x="1180" y="388" text-anchor="middle">14 l/s</text>
+      <circle class="v-ring" cx="552" cy="380" r="17" stroke="var(--eta)"/><circle class="v-eta" cx="552" cy="380" r="8"/>
+      <text class="fp-flow t-eta" x="552" y="424" text-anchor="middle">12 l/s</text>
+      <circle class="v-ring" cx="1530" cy="330" r="17" stroke="var(--eta)"/><circle class="v-eta" cx="1530" cy="330" r="8"/>
+      <text class="fp-flow t-eta" x="1530" y="370" text-anchor="middle">10 l/s</text>
+      <circle class="v-ring" cx="1550" cy="468" r="17" stroke="var(--eta)"/><circle class="v-eta" cx="1550" cy="468" r="8"/>
+      <text class="fp-flow t-eta" x="1550" y="445" text-anchor="middle">12 l/s</text>
+
+      <g transform="translate(1590,1080) rotate(-40)">
+        <path d="M0,-46 L12,10 L0,2 L-12,10 Z" fill="var(--ink)"/>
+        <text x="0" y="-56" text-anchor="middle" class="fp-sub" style="font-weight:700;fill:var(--ink)">N</text>
+      </g>
+    </svg>
+    </div>
+
+    <div class="legend">
+      <span><i class="dot" style="background:var(--sup)"></i>supply valve (fresh air in)</span>
+      <span><i class="dot" style="background:var(--eta)"></i>extract valve (stale air out)</span>
+      <span><i style="border-color:var(--sup)"></i>one Ø90 tube</span>
+      <span><i class="twin" style="border-color:var(--sup)"></i>two Ø90 tubes to one valve</span>
+      <span><i class="thick" style="border-color:var(--accent)"></i>Ø160 from unit to box</span>
+      <span>S / E = supply / extract distribution box</span>
+      <span><i class="dot" style="background:var(--oda)"></i>intake (east gable, low)</span>
+      <span><i class="dot" style="background:var(--eha)"></i>exhaust (east gable, high)</span>
+      <span><i style="border-top:3px dashed var(--ink)"></i>cylinder box (outline approximate)</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="note">
+      <b>The unit goes in the attic, on the south side of the cylinder box.</b>
+      <span>The hot-water cylinder and the heat-pump electronics stand in a boarded box between the hatch and the east gable (see <a href="#attic">the photos</a>). Facing east from the hatch, the unit goes on the box's right-hand side, close to the gable, so the intake and exhaust ducts are short. Power is already up there, and the cylinder's safety-valve outlet means there is probably a drain the condensate pipe can join.</span>
+      <span>The supply and extract boxes stay by the hatch, where there is headroom and they sit near the middle of the tube runs. Two insulated Ø160 ducts, about 7 m and 6 m, link them to the unit round the west side of the cylinder box. Putting the boxes beside the unit instead would add about 2 m to every tube going west, roughly 25–30 m of tube in all. The box outline is approximate and the tube routes are schematic; the installer fixes exact positions on the survey visit.</span>
+    </div>
+    <div class="note">
+      <b>Intake and exhaust go through the south half of the east gable.</b>
+      <span>The gable triangle is timber boarding, so the two holes are cut with a hole saw and the asbestos-cement roof isn't touched. The heat pump stands below the laundry window at the north end of the same wall. Its fan blows cold, damp air out of the front, and when it defrosts it gives off a cloud of vapour. An intake above it would pull that in: colder supply air, more ice in the HRV's exchanger, and the fan's hum carried into the ducts.</span>
+      <span>So both holes go in the south half, over Bedroom 4. The exhaust goes just south of the cylinder box, as high as the gable allows. The intake goes about 1.7 m further south and lower, so the two are at least 2 m apart corner to corner. That also keeps the HRV's damp exhaust off the heat pump's coil. Keep clear of the two black pipes beside the heat pump, which probably carry its water up to the cylinder box, and keep the barbecue away from the terrace corner below the intake.</span>
+    </div>
+  </div>
+
+  <figure class="annot">
+    <a href="photos/east-gable.jpg">
+    <svg viewBox="0 0 1417 1017" role="img" aria-labelledby="g-title g-desc">
+      <title id="g-title">East gable with the two holes marked</title>
+      <desc id="g-desc">Photo of the east gable from the garden: white timber boarding in the gable triangle above a white brick wall with three windows. The heat pump stands under the right-hand (laundry) window. The exhaust is marked high in the left half of the gable and the intake lower, towards the left corner. The boarding above the heat pump is marked as no place for holes.</desc>
+      <image href="photos/east-gable.jpg" width="1417" height="1017"/>
+      <polygon class="an-keep" points="850,262 1172,428 1172,478 850,478"/>
+      <text class="an-t" x="1005" y="462" text-anchor="middle" style="font-size:30px">no holes here</text>
+      <rect class="an-hp" x="926" y="690" width="200" height="176" rx="6"/>
+      <text class="an-t" x="1026" y="910" text-anchor="middle">heat pump</text>
+      <line class="an-dist" x1="577" y1="314" x2="375" y2="410"/>
+      <text class="an-t" x="466" y="340" text-anchor="end" style="font-size:30px">≥ 2 m</text>
+      <circle cx="577" cy="314" r="24" fill="var(--eha)" stroke="#fff" stroke-width="5"/>
+      <text class="an-t" x="577" y="272" text-anchor="middle">OUT · exhaust</text>
+      <circle cx="375" cy="410" r="24" fill="var(--oda)" stroke="#fff" stroke-width="5"/>
+      <text class="an-t" x="375" y="466" text-anchor="middle">IN · intake</text>
+    </svg>
+    </a>
+    <figcaption>The east gable from the garden. Left to right, the windows are Bedroom 4, Bathroom 1 and the laundry room. The marked spots are approximate. Mark them from inside the attic, between the gable studs, and check from outside before cutting.</figcaption>
+  </figure>
+</section>
+
+<section id="attic">
+  <div class="stack">
+    <div class="eyebrow">Site photos · 10 November 2026</div>
+    <h2>The attic as it is today</h2>
+    <p>The hot-water cylinder and the heat-pump electronics are inside the boarded box. The HRV unit goes on the box's right-hand side as you face it from the hatch, looking east: its south side (IMG_2482). The outside of the east gable is in the <a href="#plan">floor plan</a> section. Click any photo to see it full size.</p>
+  </div>
+
+  <div class="gallery">
+    <figure>
+      <a href="photos/IMG_2483.jpg"><img src="photos/IMG_2483.jpg" width="1600" height="1200" loading="lazy" alt="Attic seen from the hatch: a boarded wall shaped to the roof profile, with a rug and boarded floor in front and storage on the right"></a>
+      <figcaption><b>The cylinder box</b><span>Boarded box holding the cylinder and the heat-pump electronics, seen from the hatch. Boarded floor in front.</span><span class="mono">IMG_2483</span></figcaption>
+    </figure>
+    <figure class="key">
+      <a href="photos/IMG_2482.jpg"><span class="pin">HRV spot</span><img src="photos/IMG_2482.jpg" width="1600" height="1200" loading="lazy" alt="The space to the right of the boarded box: loose insulation on the ceiling, a diagonal truss member crossing the space, and a truss post with storage shelves on the right"></a>
+      <figcaption><b>Right-hand side of the box</b><span>Where the unit would go. A diagonal truss member crosses the space, and the roof slope lowers the height towards the eaves.</span><span class="mono">IMG_2482</span></figcaption>
+    </figure>
+    <figure>
+      <a href="photos/IMG_2480.jpg"><img src="photos/IMG_2480.jpg" width="1600" height="1200" loading="lazy" alt="The open loft hatch with its ladder, network cables hanging from a truss beside it, extension leads on the floor and insulation beyond"></a>
+      <figcaption><b>The hatch</b><span>65 × 117 cm, above the laundry room. Network cables on the truss beside it, extension leads on the floor.</span><span class="mono">IMG_2480</span></figcaption>
+    </figure>
+    <figure>
+      <a href="photos/IMG_2481.jpg"><img src="photos/IMG_2481.jpg" width="1600" height="1200" loading="lazy" alt="View along the length of the attic between the trusses: storage boxes on both sides, a narrow board walkway and loose, stacked insulation batts"></a>
+      <figcaption><b>Along the attic</b><span>Storage on both sides, a board walkway, and insulation batts lifted and stacked in places. Asbestos-cement sheets overhead.</span><span class="mono">IMG_2481</span></figcaption>
+    </figure>
+    <figure>
+      <a href="photos/IMG_2484.jpg"><img src="photos/IMG_2484.jpg" width="1200" height="1600" loading="lazy" alt="A vertical pipe wrapped in yellow glass wool rising from the ceiling to the roof, between truss members, beside the boarded box"></a>
+      <figcaption><b>Insulated pipe</b><span>A pipe wrapped in glass wool rises through the roof on the hatch side of the box. Still to identify.</span><span class="mono">IMG_2484</span></figcaption>
+    </figure>
+    <figure>
+      <a href="photos/IMG_2485.jpg"><img src="photos/IMG_2485.jpg" width="1600" height="1200" loading="lazy" alt="View from the hatch towards the insulated pipe, with network cables hanging from the truss and a silver flexible duct lying in the insulation"></a>
+      <figcaption><b>From the hatch</b><span>The same pipe, with a silver flexible duct lying in the insulation behind it.</span><span class="mono">IMG_2485</span></figcaption>
+    </figure>
+    <figure>
+      <a href="photos/IMG_2486.jpg"><img src="photos/IMG_2486.jpg" width="1200" height="1600" loading="lazy" alt="A small network switch screwed under a truss, with grey network cables plugged in and hanging down"></a>
+      <figcaption><b>Network switch</b><span>On the truss beside the hatch, with a cable to each bedroom and the living room.</span><span class="mono">IMG_2486</span></figcaption>
+    </figure>
+    <figure>
+      <a href="photos/IMG_2487.jpg"><img src="photos/IMG_2487.jpg" width="1200" height="1600" loading="lazy" alt="The network switch seen from below: six ports in use and two empty"></a>
+      <figcaption><b>Switch, from below</b><span>Six ports in use, two that look free.</span><span class="mono">IMG_2487</span></figcaption>
+    </figure>
+  </div>
+
+  <div class="grid2">
+    <div class="box">
+      <h3>The spot beside the box: measure it first</h3>
+      <p>It's a good spot: close to the power, the cylinder's drain and the east gable, so the intake and exhaust ducts stay short. The catch is height. The diagonal truss member in IMG_2482 and the roof slope both cut into the space, so measure before choosing a unit:</p>
+      <ul>
+        <li>Width from the box wall to the next truss.</li>
+        <li>Depth back from the front of the box.</li>
+        <li>Height under the diagonal, at the front and at the back.</li>
+      </ul>
+      <p>Compare that with the unit's data sheet, including its connection spigots, plus about 60 cm clear in front of the filter door. If an upright unit doesn't fit, a flat unit made to lie on the attic floor, or a spot in front of the box on the boarded floor (IMG_2483), are the fallbacks.</p>
+    </div>
+    <div class="box">
+      <h3>The box can double as the enclosure</h3>
+      <p>The plan says a unit that isn't rated for a cold attic needs an insulated enclosure. You already have most of one: the box around the cylinder, which the cylinder's heat loss keeps above freezing. Extending its walls and lid around the spot on the right would keep the unit frost-free, keep the condensate pipe short and indoors, and bring the indoor-only units on the shortlist (Vaillant, Zehnder, Systemair) back into play.</p>
+      <p>Check that the box is insulated on every side, not only at the top edges, and leave a removable panel in front of the filter door.</p>
+    </div>
+    <div class="box">
+      <h3>The pipe and the duct next to the hatch</h3>
+      <p>The glass-wool-wrapped pipe (IMG_2484) goes up through the roof. It is most likely the drain vent from the soil stack, or the duct for the cooker hood or an old bathroom fan. The silver flexible duct in the insulation (IMG_2480, IMG_2485) is probably an old extract duct too. Find out what each one does before the installer comes:</p>
+      <ul>
+        <li>A drain vent stays. The tubes route around it.</li>
+        <li>An old bathroom-fan duct that the HRV replaces can come out, with the ceiling hole sealed airtight.</li>
+        <li>The cooker-hood duct stays exactly as it is (see "Other things in the house").</li>
+      </ul>
+      <p>None of them is a route for the HRV: they all go through the asbestos roof.</p>
+    </div>
+    <div class="box">
+      <h3>Re-lay the insulation after the tubes</h3>
+      <p>In IMG_2481 and IMG_2485 the batts are lifted, stacked and gapped in places, where people have walked and stored things. A gap lets heat out and leaves a cold patch on the ceiling of the room below, which is where mould starts. The tubes go on the ceiling joists first anyway, so that's the moment to lay the batts back tight, top them up, and keep storage on the boarded areas.</p>
+    </div>
+    <div class="box">
+      <h3>The network switch</h3>
+      <p>The switch on the truss beside the hatch (IMG_2486, IMG_2487) feeds a cable to each bedroom and the living room, so the computers, TV and console don't need wifi. The cables lie on the same ceiling joists the tubes will use.</p>
+      <ul>
+        <li><b>Tell the installer it's there.</b> Tubes go over or beside the cables, never pinching them, and no one cuts a cable that looks spare. Label each cable at the switch by room before the work starts.</li>
+        <li><b>Give the unit a cable.</b> Two ports look free. Most HRV units can be reached from an app over the home network; a cable from the switch to the unit's controller or internet gateway is more reliable than wifi through the attic floor. Run it during the install.</li>
+        <li><b>Proper power.</b> The switch and other things run on extension leads lying in the insulation. The unit and its frost preheater get a fixed supply from the electrician anyway; ask them to fit a proper socket on a truss for the switch at the same time.</li>
+        <li><b>Frost.</b> Home switches are usually rated for 0–40 °C, and a winter attic drops below freezing. If it ever drops out on frosty nights, it can move inside the extended box.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="warnbox">
+      <h3>Never cut a truss</h3>
+      <p>The roof is built from factory-made trusses (<i>gitterspær</i>), held together with nail plates. Each diagonal and post carries load. No member may be cut, notched, drilled or moved to make room for the unit, the boxes or a duct, and no nail plate removed. Everything has to fit between them. Put this in every quote request.</p>
+  </div>
+</section>
+
+<section id="flows">
+  <div class="stack">
+    <div class="eyebrow">Design flows</div>
+    <h2>How much air each room gets</h2>
+    <p>Two settings matter. <b>Normal</b> runs all day, every day. <b>Boost</b> kicks in from a humidity sensor when someone showers or cooks, or when the house is full. The building regulations (BR18) set a minimum of 0.3 l/s per m² for the house, which for 159 m² is 48 l/s, exactly the normal setting below. They also set fixed extract amounts at boost: 20 l/s from the kitchen, 15 from each bathroom and 10 from the laundry room. With five or six people the bedrooms set the real need: about 5 l/s per sleeping person keeps CO₂ under 1,000 ppm with the door closed. The two boys' rooms get a little extra because their windows stay shut.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Room</th><th class="n">Area</th><th>Who / what</th><th>Valve</th><th class="n">Normal l/s</th><th class="n">Boost l/s</th></tr></thead>
+      <tbody>
+        <tr><td>Bedroom 1 (NW)</td><td class="n">12.6 m²</td><td>Daughter, 19, sometimes 2 people</td><td><span class="tag sup">supply</span></td><td class="n">10</td><td class="n">13</td></tr>
+        <tr><td>Bedroom 2 (SW)</td><td class="n">10.7 m²</td><td>Son, 16, gaming PC</td><td><span class="tag sup">supply</span></td><td class="n">7</td><td class="n">9</td></tr>
+        <tr><td>Bedroom 3 (S)</td><td class="n">8.5 m²</td><td>Son, 11, gaming PC</td><td><span class="tag sup">supply</span></td><td class="n">7</td><td class="n">9</td></tr>
+        <tr><td>Bedroom 4 (E)</td><td class="n">12.2 m²</td><td>You two</td><td><span class="tag sup">supply</span></td><td class="n">10</td><td class="n">13</td></tr>
+        <tr><td>Living room</td><td class="n">43.3 m²</td><td>everyone</td><td><span class="tag sup">supply ×2</span></td><td class="n">14</td><td class="n">20</td></tr>
+        <tr><td>Kitchen</td><td class="n">13.3 m²</td><td>cooking</td><td><span class="tag eta">extract</span></td><td class="n">14</td><td class="n">20</td></tr>
+        <tr><td>Bathroom 1 (en-suite)</td><td class="n">6.4 m²</td><td>bathtub</td><td><span class="tag eta">extract</span></td><td class="n">12</td><td class="n">16</td></tr>
+        <tr><td>Bathroom 2</td><td class="n">4.0 m²</td><td>shower</td><td><span class="tag eta">extract</span></td><td class="n">12</td><td class="n">16</td></tr>
+        <tr><td>Laundry room</td><td class="n">8.6 m²</td><td>washer, heat-pump dryer</td><td><span class="tag eta">extract</span></td><td class="n">10</td><td class="n">12</td></tr>
+        <tr><td>Entré, hall, gang</td><td class="n">≈13 m²</td><td>–</td><td><span class="tag tr">transfer</span></td><td class="n">–</td><td class="n">–</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="4">Total supply = total extract (balanced)</td><td class="n">48 = 173 m³/h</td><td class="n">64 = 230 m³/h</td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <p style="font-size:.88rem;color:var(--muted)">The room areas are measured inside the walls from the floor plan and add up to about 135 m². The 159 m² registered in BBR is measured to the outside of the walls; that is the figure BR18 uses for the minimum airflow. The air volume (about 310 m³) and the air changes in the calculator use the inside measurements.</p>
+  <div class="grid2">
+    <div class="box">
+      <h3>Bedroom 1: the room most at risk</h3>
+      <p>No sun means its outside walls are the coldest surfaces in the house, and with two people sleeping there it produces the most moisture of any bedroom. It gets 10 l/s, the same as yours. Point the supply valve's air towards the window and outside wall, and keep the bed and wardrobe 5–10 cm off the outside walls so air reaches them.</p>
+    </div>
+    <div class="box">
+      <h3>Bedrooms 2 and 3: shut windows, gaming PCs</h3>
+      <p>For a room whose window never opens, the supply valve is the only fresh air. A CO₂ sensor in bedroom 2, wired to the unit, can switch to boost on late gaming nights; most units accept one. Ventilation removes CO₂ and moisture but very little heat: a gaming PC adds 300–500 W, so these rooms will still run warm in summer. The night bypass helps a little.</p>
+    </div>
+    <div class="box">
+      <h3>Two bathrooms, both on boost</h3>
+      <p>Bathroom 2 (shower) is next to the children's rooms and probably takes most of the daily showers; Bathroom 1 (bathtub) is your en-suite. Each gets 12 l/s, rising to 16 l/s on boost, above the 15 l/s the rules ask for. A humidity sensor switches to boost after a shower and drops back on its own. Bathroom 1's replacement air comes through your bedroom, so both doors in that suite need a gap.</p>
+    </div>
+    <div class="box">
+      <h3>Door gaps everywhere</h3>
+      <p>Every bedroom, bathroom and laundry-room door needs a 10–15 mm gap underneath, or a small transfer grille, so air can move towards the extract rooms. Without the gap a valve can't deliver its air. Leave the system on all year; switching it off is what lets mould come back.</p>
+    </div>
+  </div>
+</section>
+
+<section id="ducts">
+  <div class="stack">
+    <div class="eyebrow">Ducts and joints</div>
+    <h2>One tube per valve, from two distribution boxes</h2>
+    <p>There are three ways to connect the valves. The limit that decides between them is how much air a tube can carry quietly. A standard Ø90 mm semi-rigid tube (about 76 mm inside) carries up to about 40 m³/h (11 l/s) before the air starts to whistle at the valve. Bedroom 1, bedroom 4, the kitchen, both bathrooms and the laundry room need more than that on boost.</p>
+  </div>
+
+  <div class="optgrid">
+    <div class="box rec">
+      <span class="verdict-tag">Recommended</span>
+      <h3>Radial: one box, a tube per valve</h3>
+      <p>A distribution box near the unit splits the air into separate Ø90 tubes, one per valve, or two where the flow is high. Each tube runs unbroken from box to valve, with no joints along the way.</p>
+      <ul>
+        <li>No sound travels between bedrooms, since they share no duct.</li>
+        <li>Easy to balance: a restrictor ring per tube at the box.</li>
+        <li>Flexible tubes lie on the ceiling joists and get buried in the new insulation.</li>
+        <li>Only two joints per tube (box end, valve end), so few places to leak.</li>
+        <li>More tube in total (≈137 m), but it is cheap per metre.</li>
+      </ul>
+    </div>
+    <div class="box alt">
+      <span class="verdict-tag">Possible, not preferred</span>
+      <h3>Branched: shared trunk with T-pieces</h3>
+      <p>One Ø160 main duct leaves the unit and branches with T-pieces, getting smaller (Ø125, then Ø100) towards the end rooms, as in the first version of the drawing.</p>
+      <ul>
+        <li>Less duct: about 7 m Ø160, 12 m Ø125 and 31 m Ø100.</li>
+        <li>About 9 T-pieces, 5 reducers, 20 bends and 10 dampers to fit and seal.</li>
+        <li>Bedrooms share the trunk, so you need 4 crosstalk silencers to stop sound passing between them.</li>
+        <li>Balancing is fiddly: adjusting one damper changes the others.</li>
+        <li>All 50 m of rigid duct sits above the insulation and needs its own 50–100 mm jacket.</li>
+      </ul>
+    </div>
+    <div class="box no">
+      <span class="verdict-tag">Doesn't work here</span>
+      <h3>One single tube per room</h3>
+      <p>A 1-to-N box with exactly one Ø90 tube per room is the simplest idea, but six of the ten valves need more air on boost than one tube carries quietly.</p>
+      <ul>
+        <li>Bathrooms at 58 m³/h and the kitchen at 72 m³/h in one tube would whistle and starve the unit.</li>
+        <li>The fix is the radial layout with a second tube to those valves.</li>
+        <li>Larger single tubes (Ø125 flexible) exist but are stiff, noisy and hard to clean.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Box outlet</th><th>To valve</th><th class="n">Boost flow</th><th class="n">Tubes</th><th class="n">m³/h per tube</th><th class="n">Length each</th><th class="n">Tube total</th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="7">Supply box S (Ø160 in, 8 tubes out)</td></tr>
+        <tr><td class="mono">S1–S2</td><td>Bedroom 1</td><td class="n">13 l/s</td><td class="n">2</td><td class="n">23</td><td class="n">13.0 m</td><td class="n">26.0 m</td></tr>
+        <tr><td class="mono">S3</td><td>Bedroom 2</td><td class="n">9 l/s</td><td class="n">1</td><td class="n">32</td><td class="n">15.5 m</td><td class="n">15.5 m</td></tr>
+        <tr><td class="mono">S4</td><td>Bedroom 3</td><td class="n">9 l/s</td><td class="n">1</td><td class="n">32</td><td class="n">12.5 m</td><td class="n">12.5 m</td></tr>
+        <tr><td class="mono">S5</td><td>Living room, north valve</td><td class="n">10 l/s</td><td class="n">1</td><td class="n">36</td><td class="n">9.5 m</td><td class="n">9.5 m</td></tr>
+        <tr><td class="mono">S6</td><td>Living room, south valve</td><td class="n">10 l/s</td><td class="n">1</td><td class="n">36</td><td class="n">12.0 m</td><td class="n">12.0 m</td></tr>
+        <tr><td class="mono">S7–S8</td><td>Bedroom 4</td><td class="n">13 l/s</td><td class="n">2</td><td class="n">23</td><td class="n">6.5 m</td><td class="n">13.0 m</td></tr>
+        <tr class="group"><td colspan="7">Extract box E (Ø160 out, 8 tubes in)</td></tr>
+        <tr><td class="mono">E1–E2</td><td>Kitchen</td><td class="n">20 l/s</td><td class="n">2</td><td class="n">36</td><td class="n">5.0 m</td><td class="n">10.0 m</td></tr>
+        <tr><td class="mono">E3–E4</td><td>Bathroom 2 (shower)</td><td class="n">16 l/s</td><td class="n">2</td><td class="n">29</td><td class="n">12.5 m</td><td class="n">25.0 m</td></tr>
+        <tr><td class="mono">E5–E6</td><td>Laundry room</td><td class="n">12 l/s</td><td class="n">2</td><td class="n">22</td><td class="n">2.5 m</td><td class="n">5.0 m</td></tr>
+        <tr><td class="mono">E7–E8</td><td>Bathroom 1 (tub)</td><td class="n">16 l/s</td><td class="n">2</td><td class="n">29</td><td class="n">4.0 m</td><td class="n">8.0 m</td></tr>
+      </tbody>
+      <tfoot>
+        <tr><td colspan="3">16 tubes, 10 valves</td><td class="n">16</td><td class="n"></td><td class="n"></td><td class="n">136.5 m</td></tr>
+      </tfoot>
+    </table>
+  </div>
+  <p style="font-size:.88rem;color:var(--muted)">Lengths are measured along the drawn routes at the plan's scale, plus 1.5 m per tube for the drop into the valve box and slack at the distribution box. Rounded up to the next half metre. Buy about 10% extra: 150 m, usually three 50 m rolls. The shortest runs (Bedroom 4, laundry room, Bathroom 1) get restrictor rings at the box so they don't take more than their share. The longest (Bedroom 2, 15.5 m) is well within the usual 20–25 m limit for a radial tube.</p>
+  <div class="note">
+    <b>Flexible tube suits a 1970s house well.</b>
+    <span>Rigid ducts (galvanised steel spiral, or aluminium) belong to the branched layout: every joint has to be sealed and every metre insulated, and the pieces are heavier to carry through the hatch. NilAir's flexible tube goes up in rolls, runs in one piece from box to valve, and gets buried in the insulation. With an open attic above every room, it is as easy to fit in an old house as in a new one.</span>
+  </div>
+</section>
+
+<section id="vents">
+  <div class="stack">
+    <div class="eyebrow">Vents and habits</div>
+    <h2>Which vents, where they go, and how air moves</h2>
+    <p>All ten vents sit in the ceiling, fed from the attic. Supply vents spread fresh air along the ceiling, so it mixes with room air before it reaches anyone. Every vent is placed so the air has to cross the room between the vent and the door: extract vents in the corner farthest from the door, supply vents on the door side throwing their air away from it. The positions on the floor plan follow the rules below; the installer may shift them by up to half a metre to clear a rafter or a ceiling light.</p>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Vent</th><th>Type</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr><td><span class="tag sup">supply</span><br><small>bedrooms, living room</small></td><td>Ceiling supply valve with adjustable throw (<i>indblæsningsventil</i>), from the NilAir range</td><td>Blows the air flat along the ceiling, where it clings and mixes. Air arriving at 17–19 °C then reaches you at room temperature, with no draught. The throw can be aimed at one wall or spread all round.</td></tr>
+        <tr><td><span class="tag eta">extract</span><br><small>bathrooms, laundry room</small></td><td>Ceiling extract disc valve (<i>udsugningsventil</i>), metal or moisture-proof plastic</td><td>Simple, quiet and easy to take down and wash. The gap around the disc sets the flow.</td></tr>
+        <tr><td><span class="tag eta">extract</span><br><small>kitchen</small></td><td>Extract valve with a washable grease filter</td><td>Catches the cooking grease the hood misses, so it never reaches the tubes or the unit.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Room</th><th>Where in the ceiling</th><th>Aim / notes</th></tr></thead>
+      <tbody>
+        <tr><td>Bedroom 1</td><td>Door side: about 1 m in from the door wall and 0.9 m from the hall-side wall</td><td>Throw towards the window and the north-west outside corner, about 2.2 m away; that corner is the coldest, most mould-prone spot in the house. Not above the head of the bed.</td></tr>
+        <tr><td>Bedroom 2</td><td>Door side: about 1 m in from the door wall and 0.6 m from the hall-side wall</td><td>Throw towards the window and the outside corner. Not straight above the desk or gaming chair, to avoid a cool neck.</td></tr>
+        <tr><td>Bedroom 3</td><td>On the gang wall at the other end from the door, about 1 m out and 0.7 m from the living-room-side wall</td><td>Throw towards the window. The smallest room, so keep the throw wide and gentle so no single jet reaches the bed or desk.</td></tr>
+        <tr><td>Bedroom 4</td><td>About 1.2 m in from the living-room wall, just past both doors</td><td>Throw towards the east window, about 2.6 m away. The air then returns along the floor to the bathroom door. Not above the head of the bed.</td></tr>
+        <tr><td>Living room, north</td><td>About 3 m south of the arch and 2 m from the hall-side wall</td><td>Spread all round. Far enough from the arch that fresh air doesn't go straight out to the kitchen again.</td></tr>
+        <tr><td>Living room, south</td><td>About 2.3 m in from the big south window, near the middle of the room's width</td><td>Throw towards the glass. It warms and dries the window and stops the cold draught falling off it.</td></tr>
+        <tr><td>Kitchen</td><td>East end, 1.5–2 m from the hob, towards the laundry door</td><td>Never above the hob or inside the hood's reach; the hood handles cooking smoke.</td></tr>
+        <tr><td>Bathroom 1 (tub)</td><td>Far corner from the door, over the bathtub end, at least 0.3 m from the walls</td><td>Where the steam rises. Metal or moisture-proof valve.</td></tr>
+        <tr><td>Bathroom 2 (shower)</td><td>South end, the far side from the door (which is near the top of the east wall)</td><td>Drawn there because the shower probably is. If the shower is somewhere else, put the valve above or beside it, still away from the door.</td></tr>
+        <tr><td>Laundry room</td><td>East side, above the washer, dryer and sink, the far side from the kitchen door</td><td>Picks up the warm, damp air on laundry days.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="box">
+      <h3>"Across from the door, in a corner": is that right?</h3>
+      <p>Mostly, yes. What matters is that air crosses the whole room between where it comes in and where it leaves, which is the door gap. For an extract vent that means the corner farthest from the door, exactly as you read.</p>
+      <p>A supply vent can do it either way round: in the far corner throwing towards the door, or on the door side throwing away from it. Danish installers usually choose the door side. The air runs along the ceiling to the outside wall, falls down the cold wall and window, which warms and dries them, and comes back along the floor to the door. That's what you want against mould, so the plan uses it.</p>
+      <p>What doesn't work: a supply vent next to the door blowing towards it (the air leaves straight away), or a vent right above a bed, desk or sofa.</p>
+    </div>
+    <div class="box">
+      <h3>Distances and the rules</h3>
+      <ul>
+        <li><b>From walls:</b> at least 0.3 m from any wall, so the valve can be taken down and cleaned and a supply jet doesn't cling to the wall and drop.</li>
+        <li><b>Throw length:</b> a supply vent aimed at one wall should be roughly as far from that wall as its throw at that flow. For 7–13 l/s that is usually 2–3 m. Each valve's data sheet has a throw diagram.</li>
+        <li><b>From people:</b> about 1 m to the side of a bed head, desk chair or sofa.</li>
+        <li><b>Kitchen:</b> 1.5–2 m from the hob, never inside the hood's reach.</li>
+      </ul>
+      <p>BR18 doesn't say where vents go. It requires a good indoor climate without draught, and the ventilation designed to DS 447. In practice the installer checks two things at handover: air speed where people sit and sleep stays low (about 0.15 m/s in winter is the usual target), and noise stays under 30 dB(A) in bedrooms and living rooms. These distances are common practice and rules of thumb, not legal minimums.</p>
+    </div>
+  </div>
+
+  <div class="stack">
+    <h3>The air path through the house, and what that means for the doors</h3>
+    <p>Air always travels from the rooms with supply vents to the rooms with extract vents. In this house it follows three paths. The living-room-to-kitchen opening needs nothing; the doors need a gap.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>From → to</th><th class="n">Normal</th><th class="n">Boost</th><th>Door advice</th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="4">West wing: bedrooms 1–3</td></tr>
+        <tr><td>Bedrooms 1–3 → gang and hall</td><td class="n">24 l/s</td><td class="n">31 l/s</td><td>10–15 mm gap under each bedroom door. Doors can stay shut, also at night.</td></tr>
+        <tr><td>Hall → Bathroom 2</td><td class="n">12 l/s</td><td class="n">16 l/s</td><td>Gap under the bathroom door.</td></tr>
+        <tr><td>Hall → living room</td><td class="n">12 l/s</td><td class="n">15 l/s</td><td><b>The busiest door in the house</b> (marked on the plan). It carries the bedrooms' surplus air to the kitchen side. It's the glazed door from the hall into the living room. Give it a 15 mm gap underneath (a carpenter can trim the bottom of the door), or a small transfer grille in its lower wooden panel or in the wall above it. Then it can be open or shut.</td></tr>
+        <tr class="group"><td colspan="4">Living room and kitchen</td></tr>
+        <tr><td>Living room → kitchen</td><td class="n">24 l/s</td><td class="n">32 l/s</td><td>The open arch (marked on the plan). No door, so nothing needed.</td></tr>
+        <tr><td>Kitchen → laundry room</td><td class="n">10 l/s</td><td class="n">12 l/s</td><td>Gap under the laundry door.</td></tr>
+        <tr class="group"><td colspan="4">Your suite</td></tr>
+        <tr><td>Living room → Bedroom 4</td><td class="n">2 l/s</td><td class="n">3 l/s</td><td>Normal door gap.</td></tr>
+        <tr><td>Bedroom 4 → Bathroom 1</td><td class="n">12 l/s</td><td class="n">16 l/s</td><td>Gap under the bathroom door.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid2">
+    <div class="box">
+      <h3>Doors: open or shut?</h3>
+      <p>Either. With the gaps in place the system works the same with doors open or closed, so close bedroom doors for sleep and privacy as you like. Two exceptions: keep a bathroom door shut while showering and for about 30 minutes after, so the steam goes out through the extract instead of into the bedrooms. Keep the laundry door shut while the washer and dryer run.</p>
+    </div>
+    <div class="box">
+      <h3>Daily habits that keep mould away</h3>
+      <ul>
+        <li>Leave the system on all year. Use the away mode for holidays, never off.</li>
+        <li>Keep every room at 18 °C or more, bedrooms included. A cold, shut room is where mould starts.</li>
+        <li>Keep furniture 5–10 cm off outside walls, and avoid big wardrobes against them, especially in Bedroom 1.</li>
+        <li>Don't block door gaps with thick rugs, thresholds or draught stoppers.</li>
+        <li>Blackout curtains are fine in Bedroom 2; leave a gap so they don't press against the cold glass.</li>
+        <li>After a shower, squeegee the walls and leave the extract to clear the steam.</li>
+        <li>Cook with lids on and the hood running; dry laundry in the heat-pump dryer, not on racks.</li>
+        <li>Keep a hygrometer or two. Aim for 35–55% indoor humidity in winter.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Looking after the vents</h3>
+      <ul>
+        <li>Wipe the vents once or twice a year; wash the kitchen grease filter every few months.</li>
+        <li>Before taking a vent down, mark the disc's position. Turning it changes the airflow the installer set.</li>
+        <li>Don't paint over vents, and don't hang anything in front of a supply vent's throw.</li>
+        <li>In winter there's no need to air the house. In summer open windows as you like; the bypass handles the rest.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="climate">
+  <div class="stack">
+    <div class="eyebrow">Climate check</div>
+    <h2>Is HRV right for Køge?</h2>
+    <p>Eastern Zealand has a mild, damp maritime climate: January averages around 1–2 °C, the heating season runs roughly September to May, and the Danish design temperature is −12 °C. Outdoor air is often 85–90% relative humidity in winter, but because it's cold it holds very little water. Warm it to 21 °C and its humidity drops to about 25%, so every cubic metre you bring in carries moisture back out. That makes ventilation the main tool against condensation and mould here.</p>
+  </div>
+  <div class="grid2">
+    <div class="box">
+      <h3>Why it fits</h3>
+      <ul>
+        <li>Long heating season, so the heat exchanger works most of the year.</li>
+        <li>Mild winters mean frost protection only runs on a handful of cold days.</li>
+        <li>Damp winters and five people make continuous ventilation necessary for mould control. Heat recovery makes that affordable.</li>
+        <li>Supply air arrives at about 17–19 °C on a 0 °C day, so no extra heater is needed with your heat pump.</li>
+        <li>A summer bypass lets cool night air in without passing through the exchanger.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Choices this climate settles</h3>
+      <ul>
+        <li><b>Counterflow plate exchanger</b> (80–92% efficient), not a rotary wheel. It keeps the moisture out of the supply air.</li>
+        <li><b>No enthalpy (moisture-recovering) exchanger.</b> It returns humidity to the house, which you don't want with five occupants.</li>
+        <li><b>Frost protection</b> by a small preheater or flow balancing. Ask what the unit does below −5 °C.</li>
+        <li><b>Insulated ducts in the attic.</b> The attic is outdoor temperature in winter.</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Option</th><th>Heat kept</th><th>Mould control</th><th>Bedrooms at night</th><th>Noise</th><th>Typical cost (DKK)</th></tr></thead>
+      <tbody>
+        <tr><td><b class="pick">Central HRV in the attic</b><br><small>recommended</small></td><td class="rating">●●●●●</td><td class="rating">●●●●●</td><td class="rating">●●●●●</td><td>Quiet; unit away from bedrooms</td><td class="n">60–110k</td></tr>
+        <tr><td><b>Decentral wall units</b><br><small>pairs through outside walls</small></td><td class="rating">●●●○○</td><td class="rating">●●●○○</td><td class="rating">●●●○○</td><td>Fan in each room, audible at night</td><td class="n">40–70k</td></tr>
+        <tr><td><b>Exhaust-only fans + wall vents</b></td><td class="rating">●○○○○</td><td class="rating">●●●●○</td><td class="rating">●●○○○</td><td>Quiet; cold draughts at vents</td><td class="n">15–30k</td></tr>
+        <tr><td><b>Airing + dehumidifier</b></td><td class="rating">●●○○○</td><td class="rating">●●○○○</td><td class="rating">●○○○○</td><td>Dehumidifier hum</td><td class="n">2–5k</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warnbox">
+    <h3>Check before you buy: how leaky is the house?</h3>
+    <p>Heat recovery only saves heat on air that goes through the unit. If the house leaks a lot of air through gaps around windows, the ceiling, the hatch and the unused chimney, that air bypasses the exchanger. A blower-door test (<i>tæthedsprøvning</i>, roughly 3,000–5,000 DKK) tells you, and sealing the loft hatch, ceiling penetrations and chimney is cheap. The indoor-climate benefit holds either way; the energy saving depends on it.</p>
+  </div>
+</section>
+
+<section id="machines">
+  <div class="stack">
+    <div class="eyebrow">Units</div>
+    <h2>Machines to shortlist</h2>
+    <p>Look for: about 300 m³/h at 100–150 Pa, counterflow exchanger ≥85% (BR18 requires at least 80%), EC fans with low specific fan power, a built-in humidity sensor, summer bypass, ISO ePM1 (F7) filter on the supply side, and app or wall control. The unit goes in a cold attic, so it must be rated for unheated spaces or sit in an insulated enclosure.</p>
+  </div>
+
+  <div class="box rec">
+    <div class="eyebrow">Placement</div>
+    <h3>In the attic, on the south side of the cylinder box</h3>
+    <ul>
+      <li><b>Fits through the hatch:</b> the 65 × 117 cm opening takes any house-sized unit. Check that its two smallest dimensions are under about 60 cm.</li>
+      <li><b>Fits beside the box:</b> a diagonal truss member and the roof slope limit the height there (see <a href="#attic">the photos</a>). Measure before choosing a unit, and never cut a truss to make room.</li>
+      <li><b>Frost:</b> choose a unit rated for unheated spaces, or extend the existing cylinder box around the unit. The cylinder's heat loss then keeps both above freezing.</li>
+      <li><b>Condensate:</b> run it to the drain the cylinder's safety valve uses, with a heat cable wherever the pipe runs through cold attic.</li>
+      <li><b>Service:</b> put the unit near the hatch with its filter door facing a clear floor area. Lay boards on the joists so you can reach it without stepping on the insulation. You'll be up there 2–3 times a year for filters.</li>
+      <li><b>Sound:</b> the spot is above the ceiling of your bedroom (Bedroom 4), near its wall to Bathroom 1. Keep the unit as close to the box as it will go, stand it on anti-vibration feet on a board platform that spans several joists, and ask for the sound level in Bedroom 4 to be checked at handover.</li>
+    </ul>
+  </div>
+
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Unit</th><th>Origin</th><th>Why consider it</th><th>Ask about</th></tr></thead>
+      <tbody>
+        <tr><td><b>Nilan Comfort 300</b></td><td>Denmark</td><td>Very common in Danish houses, with a wide installer network. Often installed in attics.</td><td>Attic installation kit and humidity sensor included.</td></tr>
+        <tr><td><b>Genvex ECO 375</b></td><td>Denmark</td><td>Danish-built, efficient counterflow, with attic versions.</td><td>Attic-rated variant and frost protection.</td></tr>
+        <tr><td><b>Dantherm HCH range</b></td><td>Denmark</td><td>Flat horizontal units made to lie on an attic floor.</td><td>Rating for unheated spaces.</td></tr>
+        <tr><td><b>Vaillant recoVAIR</b></td><td>Germany</td><td>Same brand as your heat pump; can share the Vaillant controller and app.</td><td>Needs a frost-free space, so it goes inside the enclosure with the cylinder. Availability from a Danish Vaillant dealer.</td></tr>
+        <tr><td><b>Zehnder ComfoAir Q350</b></td><td>Netherlands</td><td>Among the quietest and most efficient; Zehnder also makes a matching radial tube system (ComfoTube).</td><td>Frost-free space, so inside an enclosure. Choose the standard (not enthalpy) exchanger.</td></tr>
+        <tr><td><b>Systemair SAVE VTR 300</b></td><td>Sweden</td><td>Compact and usually cheaper; good controls.</td><td>Indoor unit, so only inside an insulated enclosure.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.88rem;color:var(--muted)">Model names change often. Treat these as starting points and ask each installer for the current data sheet: measured efficiency and fan power at 173 m³/h, and sound level at the unit.</p>
+
+  <div class="stack" id="nilan">
+    <h3>If you choose the Nilan Comfort 300 LR: accessories</h3>
+    <p>Nilan offers eleven add-ons for this unit. For your house, three are needed and two are worth considering. You don't need the others: the cooker-hood box (your hood vents outside), the electric and water after-heaters (your heat pump heats the house more cheaply), the hoisting sled (the hatch is big enough) and the option board (unless the installer says the CO₂ sensor needs it).</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Accessory</th><th>Status</th><th>Why</th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="3">Buy these</td></tr>
+        <tr><td><b>Electric preheater</b><br><small><i>El-forvarmeflade til frostsikring</i></small></td><td><span class="tag sup" style="background:var(--ok)">needed</span></td><td>In a cold attic, a long frost lets ice build up in the heat exchanger. The preheater stops that and uses very little power. Nilan recommends it, and in your attic it's essential. Tell the electrician, because it may need its own circuit.</td></tr>
+        <tr><td><b>Water trap with ball</b><br><small><i>Vandlås</i></small></td><td><span class="tag sup" style="background:var(--ok)">needed</span></td><td>In summer the unit makes no condensate, so an ordinary trap dries out. Air then gets sucked in and the condensate can't drain, which causes water damage. The ball in Nilan's trap prevents that.</td></tr>
+        <tr><td><b>Anti-vibration feet (4)</b><br><small><i>Vibrationsdæmpere</i></small></td><td><span class="tag sup" style="background:var(--ok)">needed</span></td><td>They stop the unit's hum from passing through the joists into the bedrooms below.</td></tr>
+        <tr class="group"><td colspan="3">Consider</td></tr>
+        <tr><td><b>Pollen filter</b><br><small><i>Pollenfilter</i></small></td><td><span class="tag tr">consider</span></td><td>Get it if anyone in the family has hay fever. Lille Skensved has fields all around, and Nilan says it also removes about 50% of fine particles. It's cheap to add, and the filters cost a little more to replace.</td></tr>
+        <tr><td><b>CO₂ sensor</b><br><small><i>CO2-føler</i></small></td><td><span class="tag tr">consider</span></td><td>It turns the system up when the stale air leaving the house is high in CO₂. It measures the mixed air from the whole house at the unit, not one bedroom, so it reacts to a full house rather than one closed room. The built-in humidity sensor already handles showers. Ask whether it needs the option board (<i>optionsprint</i>).</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p style="font-size:.88rem;color:var(--muted)">Ask Nilan or the installer to confirm two things: that the Comfort 300 LR is approved for an unheated attic (if not, it goes in the insulated enclosure with the cylinder), and that the humidity sensor comes as standard with the CTS 602 controller.</p>
+</section>
+
+<section id="fittings">
+  <div class="stack">
+    <div class="eyebrow">Bill of materials</div>
+    <h2>Shopping list</h2>
+    <p>Everything for the radial layout on the plan, with quantities. With the Nilan Comfort 300 LR, the boxes, tubes, connectors and valve boxes all come from Nilan's own NilAir flexible tube system, so every seal and clip fits.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Part</th><th class="n">Qty</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr class="group"><td colspan="3">Unit and outside air</td></tr>
+        <tr><td>HRV unit with controller and humidity sensor</td><td class="n">1</td><td>≈300 m³/h class, counterflow, bypass, EC fans. Attic-rated, or placed in an enclosure. Include the electric frost preheater.</td></tr>
+        <tr><td>Insulated enclosure, walkway boards, anti-vibration feet</td><td class="n">1 set</td><td>Enclosure only if the unit isn't rated for unheated spaces. Extending the existing cylinder box is the cheapest way.</td></tr>
+        <tr><td>Ø160 duct with vapour-tight insulation (intake + exhaust)</td><td class="n">≈3 m</td><td>About 2 m to the intake and 1 m to the exhaust; the unit stands close to the gable. Closed-cell or foil-faced insulation, ≥50 mm, so these cold ducts don't sweat.</td></tr>
+        <tr><td>Ø160 bends, 90°</td><td class="n">≈9</td><td>Two on the intake, one on the exhaust, three on each duct to the boxes, and a spare.</td></tr>
+        <tr><td>Wall terminals / gable grilles, Ø160</td><td class="n">2</td><td>In the south half of the east gable, at least 2 m apart, away from the heat pump. Cut through the timber boarding with a hole saw sized to the terminal, and seal around it.</td></tr>
+        <tr><td>Condensate drain with dry trap, heat cable</td><td class="n">1 set</td><td>To the cylinder's drain. Use a ball-type trap that can't dry out (Nilan's <i>vandlås</i> with the Comfort 300 LR). Connected by an authorised plumber.</td></tr>
+        <tr><td>Electrical supply</td><td class="n">1</td><td>230 V, fitted by an authorised electrician. Ask for a fixed socket for the network switch at the same time.</td></tr>
+        <tr><td>Network cable, switch to unit (optional)</td><td class="n">1</td><td>For the unit's app or internet gateway. Two ports on the attic switch look free.</td></tr>
+
+        <tr class="group"><td colspan="3">Between unit and boxes</td></tr>
+        <tr><td>Ø160 insulated duct, unit to each box</td><td class="n">≈13 m</td><td>About 7 m to the supply box and 6 m to the extract box by the hatch, round the west side of the cylinder box. Insulated like the intake and exhaust, so warm extract air doesn't condense inside.</td></tr>
+        <tr><td>Silencer Ø160, ≈1,000 mm</td><td class="n">2</td><td>One on supply, one on extract. Some boxes have a silencer built in, which replaces this.</td></tr>
+        <tr><td>NilAir supply distribution box, Ø160 in, Ø90 outlets</td><td class="n">1</td><td>8 outlets used. A box with more outlets leaves capped spares.</td></tr>
+        <tr><td>NilAir extract distribution box, Ø160 out, Ø90 inlets</td><td class="n">1</td><td>8 inlets used. Same box type as supply.</td></tr>
+        <tr><td>Blanking caps for unused outlets</td><td class="n">as needed</td><td>Only if the boxes have more than 8 outlets.</td></tr>
+
+        <tr class="group"><td colspan="3">Tubes and joints (NilAir)</td></tr>
+        <tr><td>NilAir Ø90 flexible tube (smooth, antistatic inner wall)</td><td class="n">150 m</td><td>136.5 m measured + 10%. Three 50 m rolls.</td></tr>
+        <tr><td>NilAir tube connectors (box and valve-box ends)</td><td class="n">32</td><td>One at each end of each of the 16 tubes.</td></tr>
+        <tr><td>Sealing rings</td><td class="n">32</td><td>One per connector. Buy a few spare.</td></tr>
+        <tr><td>Restrictor / balancing rings</td><td class="n">≈6</td><td>For the short runs: Bedroom 4, laundry room, Bathroom 1, living room north.</td></tr>
+        <tr><td>Tube clips or straps</td><td class="n">≈60</td><td>Fix tubes to joists every 1–1.5 m. No straight joints along any tube.</td></tr>
+
+        <tr class="group"><td colspan="3">Valves (10)</td></tr>
+        <tr><td>NilAir valve box, 1 × Ø90 in</td><td class="n">4</td><td>Bedroom 2, Bedroom 3, both living-room valves.</td></tr>
+        <tr><td>NilAir valve box, 2 × Ø90 in</td><td class="n">6</td><td>Bedroom 1, Bedroom 4, kitchen, both bathrooms, laundry room.</td></tr>
+        <tr><td>Supply valves (<i>indblæsningsventil</i>)</td><td class="n">6</td><td>Ceiling type with adjustable throw, sized to the NilAir valve box. See "Vents and habits" for type and position.</td></tr>
+        <tr><td>Extract valves (<i>udsugningsventil</i>)</td><td class="n">4</td><td>Adjustable disc type, sized to the valve box. The kitchen one with a washable grease filter.</td></tr>
+        <tr><td>Airtight collars for the vapour barrier</td><td class="n">10</td><td>One per valve box. A leaky penetration puts warm, moist air into the cold attic.</td></tr>
+
+        <tr class="group"><td colspan="3">House</td></tr>
+        <tr><td>Door gaps or transfer grilles</td><td class="n">8</td><td>10–15 mm under each bedroom, bathroom and laundry-room door.</td></tr>
+        <tr><td>CO₂ sensor (optional)</td><td class="n">1</td><td>In bedroom 2, wired to the unit.</td></tr>
+        <tr><td>Spare filters</td><td class="n">1 yr</td><td>ePM1 (F7) supply, coarse (G4) extract. Change every 3–6 months.</td></tr>
+        <tr><td>Loft insulation top-up</td><td class="n">≈145 m²</td><td>Laid after the tubes, so the tubes end up buried in it.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="warnbox">
+    <h3>Asbestos-cement roof: leave it untouched</h3>
+    <p>Cutting, drilling or breaking asbestos-cement sheets releases fibres, and in Denmark that work falls under strict Working Environment Authority (Arbejdstilsynet) rules, plus special disposal through your kommune. Routing intake and exhaust through the gable avoids all of it. Tell every installer about the roof up front and ask them to work in the attic without stepping on, fixing to or damaging the sheets. If the roof is due for replacement in the next few years, the HRV can be installed now; nothing in this plan depends on the roof.</p>
+  </div>
+  <div class="warnbox">
+    <h3>Other things in the house</h3>
+    <ul class="list">
+      <li><b>Cooker hood (yours vents outside).</b> Keep it exactly that way: grease ruins the exchanger. Check that its outlet has a tight backdraft damper, because a loose flap leaks warm air all winter. When the hood runs on high it pulls out air the HRV doesn't replace, so open a kitchen window a crack, or choose a unit with a "kitchen mode" that adds extra supply air.</li>
+      <li><b>Washer and dryer: nothing to do.</b> Your LG heat-pump dryer has no exhaust, and the TCL washer doesn't need ventilation. The laundry-room extract handles the damp air on laundry days.</li>
+      <li><b>Unused fireplace.</b> An open chimney is a hole in the house: it leaks heated air and upsets the balance. Close its damper tightly, or fit a chimney balloon or a cap. Never seal it if you might light it one day without removing the seal first.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="calc">
+  <div class="stack">
+    <div class="eyebrow">Estimate</div>
+    <h2>Humidity and running-cost calculator</h2>
+    <p>A simple steady-state model for a typical January day in Køge (2 °C, 88% outdoor humidity, 21 °C inside). It shows what different airflows do to indoor humidity and to the coldest spot in a room, such as an outside corner behind a wardrobe at about 14 °C. Mould starts growing when that spot stays above about 75–80%.</p>
+  </div>
+  <div class="calc">
+    <div>
+      <div class="field">
+        <label for="c-flow">Ventilation airflow <output id="o-flow">173 m³/h</output></label>
+        <input type="range" id="c-flow" min="40" max="250" step="1" value="173">
+        <div class="btnrow">
+          <button class="ghost" type="button" data-set="75">Closed-up house today ≈75</button>
+          <button class="ghost" type="button" data-set="173">HRV normal 173</button>
+          <button class="ghost" type="button" data-set="230">HRV boost 230</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="c-people">People at home <output id="o-people">5</output></label>
+        <input type="range" id="c-people" min="1" max="8" step="1" value="5">
+        <small>About 2.2 kg of water vapour per person per day, including showers and cooking.</small>
+      </div>
+      <div class="field">
+        <label for="c-laundry">Laundry dried indoors per day <output id="o-laundry">0 loads</output></label>
+        <input type="range" id="c-laundry" min="0" max="2" step="1" value="0">
+        <small>About 2 kg of water per load on a drying rack. Your heat-pump dryer adds almost nothing.</small>
+      </div>
+      <div class="field">
+        <label for="c-price">Electricity price <output id="o-price">2.50 DKK/kWh</output></label>
+        <input type="range" id="c-price" min="1" max="4" step="0.1" value="2.5">
+      </div>
+      <div class="field">
+        <label for="c-scop">Heat pump seasonal COP <output id="o-scop">3.5</output></label>
+        <input type="range" id="c-scop" min="2.5" max="5" step="0.1" value="3.5">
+      </div>
+      <div class="field">
+        <label for="c-eff">Heat recovery efficiency <output id="o-eff">85%</output></label>
+        <input type="range" id="c-eff" min="60" max="93" step="1" value="85">
+      </div>
+    </div>
+    <div>
+      <div class="out"><span>Moisture produced</span><b id="r-g">11.0 kg/day</b></div>
+      <div class="out"><span>Indoor humidity at 21 °C</span><b id="r-rh">39%</b></div>
+      <div class="out"><span>Humidity at a 14 °C cold corner (bedroom 1)</span><b id="r-corner">62%</b></div>
+      <div class="status ok" id="r-status">Low mould risk</div>
+      <div class="out"><span>Air changes per hour</span><b id="r-ach">0.56</b></div>
+      <div class="out"><span>Heat this air would cost without recovery</span><b id="r-loss">4,100 kWh/yr</b></div>
+      <div class="out"><span>Heat recovered</span><b id="r-rec">3,480 kWh/yr</b></div>
+      <div class="out"><span>Heat pump electricity saved</span><b id="r-hpe">990 kWh/yr</b></div>
+      <div class="out"><span>Fan electricity used</span><b id="r-fan">270 kWh/yr</b></div>
+      <div class="out"><span>Net saving vs. same air without recovery</span><b id="r-net">1,800 DKK/yr</b></div>
+      <small style="color:var(--muted)">Heating degree-hours from the Danish reference year (≈2,900 degree-days). Fan power assumes 650 J/m³. Savings compare against getting the same fresh air by airing or exhaust fans; if you don't ventilate today, the HRV improves air quality rather than lowering your bill.</small>
+    </div>
+  </div>
+</section>
+
+<section id="costs">
+  <div class="stack">
+    <div class="eyebrow">Budget</div>
+    <h2>What it costs</h2>
+    <p>2026 ballpark figures for a 159 m² single-storey house with good attic access, including VAT. Your quotes will vary with the unit, the enclosure and how much attic work is needed.</p>
+  </div>
+  <div class="tbl">
+    <table>
+      <thead><tr><th>Item</th><th class="n">DKK</th></tr></thead>
+      <tbody>
+        <tr><td>Unit with controls</td><td class="n">20,000–45,000</td></tr>
+        <tr><td>Distribution boxes, 150 m tube, 10 valve boxes and valves, silencers</td><td class="n">12,000–20,000</td></tr>
+        <tr><td>Ø160 insulated ducts, gable terminals, cutting the gable holes</td><td class="n">3,000–6,000</td></tr>
+        <tr><td>Installation labour (2–4 days)</td><td class="n">20,000–40,000</td></tr>
+        <tr><td>Electrician and plumber</td><td class="n">2,000–5,000</td></tr>
+        <tr><td>Commissioning and flow measurement report</td><td class="n">often included</td></tr>
+      </tbody>
+      <tfoot><tr><td>Turnkey total</td><td class="n">≈60,000–110,000</td></tr></tfoot>
+    </table>
+  </div>
+  <div class="grid2">
+    <div class="box">
+      <h3>Running costs</h3>
+      <ul>
+        <li>Fan electricity: about 250–400 kWh a year.</li>
+        <li>Filters: about 600–1,500 DKK a year.</li>
+        <li>Tube cleaning every 5–10 years, from the distribution boxes.</li>
+      </ul>
+    </div>
+    <div class="box">
+      <h3>Subsidies and deductions</h3>
+      <p>Danish support changes from year to year. Check the current rules for <i>håndværkerfradrag</i> on skat.dk, and whether an energy-renovation subsidy round (Bygningspuljen) is open on sparenergi.dk, before you sign. Some schemes require applying before work starts.</p>
+    </div>
+  </div>
+  <p>The energy saving is real but modest, around 1,000–2,000 DKK a year. The return is a dry house: no mould on walls and windows, bedrooms that aren't stuffy at night, and less airing in winter.</p>
+</section>
+
+<section id="steps">
+  <div class="stack">
+    <div class="eyebrow">Sequence</div>
+    <h2>Next steps</h2>
+  </div>
+  <ol class="steps">
+    <li><div><h3>Measure for two weeks</h3><p>Put a cheap hygrometer in each bedroom and both bathrooms, and a CO₂ meter in one of the boys' rooms overnight. Note where mould appears. This gives you a before picture and helps installers.</p></div></li>
+    <li><div><h3>Mark the two gable holes</h3><p>From inside the attic, find spots between the gable studs in the south half: the exhaust just south of the cylinder box and high, the intake about 1.7 m further south and lower, at least 2 m apart. Check from outside that neither is above the heat pump or near its pipes.</p></div></li>
+    <li><div><h3>Measure the spot beside the box</h3><p>Width, depth and height under the truss diagonal on the right-hand side of the cylinder box. Find out what the insulated pipe and the silver duct by the hatch are, and label the network cables at the switch.</p></div></li>
+    <li><div><h3>Consider a blower-door test</h3><p>Optional but useful. Seal the loft hatch, the chimney and obvious leaks either way.</p></div></li>
+    <li><div><h3>Get three quotes</h3><p>Use the checklist below so the quotes compare like for like. Send this page and mention the asbestos roof in every request.</p></div></li>
+    <li><div><h3>Install, then top up the insulation</h3><p>Usually 2–4 days, mostly in the attic. An authorised electrician connects the power and an authorised plumber the condensate drain. Only top up the loft insulation after the tubes are laid, so the new layer covers them. The 400 mm you have now is already good, and going to 500–600 mm still pays off.</p></div></li>
+    <li><div><h3>Commission and hand over</h3><p>The installer measures and adjusts the flow at every valve and gives you the report (<i>indreguleringsrapport</i>). Check the noise in the bedrooms with the doors closed.</p></div></li>
+    <li><div><h3>Live with it</h3><p>Leave it running all year. Close any old trickle vents in the windows. Change filters every 3–6 months and use the away mode for holidays.</p></div></li>
+  </ol>
+
+  <div class="stack">
+    <h3>Quote checklist</h3>
+    <p style="font-size:.9rem;color:var(--muted)">Ticks are saved in this browser only.</p>
+    <div class="check" id="checklist">
+      <label><input type="checkbox" id="q1"><span>Flow calculation per room, normal and boost, matching BR18</span></label>
+      <label><input type="checkbox" id="q2"><span>Duct drawing showing unit, boxes, every tube, valves and gable terminals</span></label>
+      <label><input type="checkbox" id="q13"><span>Radial Ø90 tubes, with two tubes wherever a valve takes more than about 40 m³/h</span></label>
+      <label><input type="checkbox" id="q3"><span>Unit data sheet: efficiency and fan power at ~175 m³/h, sound level</span></label>
+      <label><input type="checkbox" id="q4"><span>Sound target: 25 dB(A) or less in bedrooms (BR18 limit is 30)</span></label>
+      <label><input type="checkbox" id="q5"><span>Insulation of the Ø160 ducts and how the tubes get covered</span></label>
+      <label><input type="checkbox" id="q6"><span>Vapour-barrier sealing at every ceiling penetration included</span></label>
+      <label><input type="checkbox" id="q7"><span>Unit rated for a cold attic (or enclosure included), frost protection and condensate route explained</span></label>
+      <label><input type="checkbox" id="q8"><span>Door undercuts or transfer grilles included</span></label>
+      <label><input type="checkbox" id="q9"><span>Commissioning with measured flows and a written report</span></label>
+      <label><input type="checkbox" id="q10"><span>Filter prices, service interval and warranty terms</span></label>
+      <label><input type="checkbox" id="q11"><span>Intake and exhaust through the south half of the east gable, away from the heat pump, with no work on the asbestos roof</span></label>
+      <label><input type="checkbox" id="q12"><span>Tubes laid before the insulation top-up, and who does the top-up</span></label>
+      <label><input type="checkbox" id="q14"><span>Unit, boxes and ducts fit between the trusses, with no member cut or notched</span></label>
+      <label><input type="checkbox" id="q15"><span>Network cables on the ceiling left intact, and a cable from the switch to the unit</span></label>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="note">
+    <b>Still open</b>
+    <span>Whether the unit fits on the south side of the cylinder box, where exactly the box's walls are, how high the two gable holes can go between the studs, and what the insulated pipe and the silver duct by the hatch are. Installers will settle these on their survey visit, and may move the boxes or valves a little to suit the trusses.</span>
+  </div>
+</section>
+
+<footer>Planning estimate based on the sales floor plan (marked "vejledende tegning uden ansvar"). Areas and tube lengths are approximate. Final flows, duct sizes and unit choice should come from the installer's calculation and BR18 as it applies on the day you build.</footer>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  function psat(T){return 0.61094*Math.exp(17.625*T/(T+243.04));} // kPa
+  function xFrom(T,rh){var pv=rh*psat(T);return 622*pv/(101.325-pv);} // g/kg
+  function rhFrom(T,x){var pv=x*101.325/(622+x);return pv/psat(T);}
+  var fmt=function(n){return Math.round(n).toLocaleString('en-GB');};
+  var VOL=310, DEG_KH=69.7; // m3, thousand degree-hours
+  function calc(){
+    var Q=+$('c-flow').value, P=+$('c-people').value, L=+$('c-laundry').value,
+        price=+$('c-price').value, scop=+$('c-scop').value, eff=+$('c-eff').value/100;
+    $('o-flow').textContent=Q+' m³/h'; $('o-people').textContent=P;
+    $('o-laundry').textContent=L+(L===1?' load':' loads');
+    $('o-price').textContent=price.toFixed(2)+' DKK/kWh'; $('o-scop').textContent=scop.toFixed(1);
+    $('o-eff').textContent=Math.round(eff*100)+'%';
+    var G=P*2.2+L*2;
+    var xo=xFrom(2,0.88), xi=xo+G*1000/(1.2*Q*24);
+    var rh=Math.min(1,rhFrom(21,xi)), rc=Math.min(1,rhFrom(14,xi));
+    $('r-g').textContent=G.toFixed(1)+' kg/day';
+    $('r-rh').textContent=Math.round(rh*100)+'%';
+    $('r-corner').textContent=(rc>=1?'100% (condensing)':Math.round(rc*100)+'%');
+    var s=$('r-status');
+    if(rc>=0.8){s.className='status bad';s.textContent='Mould likely on cold surfaces';}
+    else if(rc>=0.7){s.className='status warn';s.textContent='Borderline: mould possible in cold corners';}
+    else{s.className='status ok';s.textContent='Low mould risk';}
+    $('r-ach').textContent=(Q/VOL).toFixed(2);
+    var loss=0.34*Q*DEG_KH, rec=loss*eff, hpe=rec/scop, fan=Q/3600*650*8.76;
+    $('r-loss').textContent=fmt(loss)+' kWh/yr';
+    $('r-rec').textContent=fmt(rec)+' kWh/yr';
+    $('r-hpe').textContent=fmt(hpe)+' kWh/yr';
+    $('r-fan').textContent=fmt(fan)+' kWh/yr';
+    $('r-net').textContent=fmt((hpe-fan)*price)+' DKK/yr';
+  }
+  ['c-flow','c-people','c-laundry','c-price','c-scop','c-eff'].forEach(function(id){$(id).addEventListener('input',calc);});
+  document.querySelectorAll('[data-set]').forEach(function(b){b.addEventListener('click',function(){$('c-flow').value=b.getAttribute('data-set');calc();});});
+  calc();
+
+  document.querySelectorAll('#checklist input').forEach(function(cb){
+    try{if(localStorage.getItem('hrv-'+cb.id)==='1')cb.checked=true;}catch(e){}
+    cb.addEventListener('change',function(){try{localStorage.setItem('hrv-'+cb.id,cb.checked?'1':'0');}catch(e){}});
+  });
+})();
+</script>
+</body>
+</html>
